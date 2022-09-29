@@ -87,7 +87,7 @@ class Post_Subdomain_Pro_License {
 		$license_info = $this->get_license_info();
 		if ( !$subdomain_license_order_id || !$subdomain_license_domain || !$license_info->status == 'active' ) {
 	 
-			$msg = __( 'Please enter Valid Order ID and Domain to enable post Subdomain Pro Plugin'.$license_info->status, 'post-subdomain-pro' );
+			$msg = __( 'Please enter Valid Order ID and Domain to enable post Subdomain Pro Plugin', 'post-subdomain-pro' );
 			?>
 				<div class="update-nag">
 					<p>
@@ -121,11 +121,12 @@ class Post_Subdomain_Pro_License {
 		$url .= '?' . http_build_query( $params );
 	 
 		// Send the request
-		$response_body = '{
-			"status": "active",
-			"wp_version": "3.2.1",
-			"package_url": "https://babiato.co"
-	}';
+		$response = wp_remote_get( $url );
+		if ( is_wp_error( $response ) ) {
+			return false;
+		}
+			 
+		$response_body = wp_remote_retrieve_body( $response );
 		$result = json_decode( $response_body );
 		 
 		return $result;
